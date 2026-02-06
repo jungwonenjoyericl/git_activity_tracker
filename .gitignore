@@ -1,1 +1,23 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs / temp
+*.log
+*.tmp
+*.cache
+
+# IDEs (optional)
+.vscode/
+.idea/
+
+# Env files
 .env
+
