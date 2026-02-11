@@ -5,6 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <!--<NoWarn>$(NoWarn);CS8600</NoWarn>  quiet run, ignore warnings -->
   </PropertyGroup>
 
   <ItemGroup>
