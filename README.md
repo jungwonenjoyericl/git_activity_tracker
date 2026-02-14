@@ -5,4 +5,6 @@ Tracks your Git activity by communicating with GitHubs API
 * Tracks input(username)s Activity and repositories
 
 dir: ConsoleApp
+
 run: dotnet run
+debug: dotnet watch
