@@ -1,5 +1,7 @@
 namespace ConsoleApp.UI;
 
+using ConsoleApp.Helpers;
+
 public class Dialogue
 {        
     public string repoUrl;
@@ -24,7 +26,7 @@ public class Dialogue
             {
                 case "1":
                 repoUrl = Environment.GetEnvironmentVariable("PRIVATE_URL");
-                goto exit_loop;
+                return;
 
                 case "2":
                 userName = "Your";
@@ -32,18 +34,17 @@ public class Dialogue
                 //split repourl and insert name 
                 activityUrl = Environment.GetEnvironmentVariable("MY_EVENTS_URL");
                 // split activity and inser name
-                
-                goto exit_loop;
+                return;
 
                 case "3":
                 Console.WriteLine("Username: ");
                 userName = Console.ReadLine();
-                repoUrl = Environment.GetEnvironmentVariable("USER_URL");
-                activityUrl = Environment.GetEnvironmentVariable("USER_URL");
-
-                goto exit_loop;
+                var repoUrlTemplate = Environment.GetEnvironmentVariable("USER_URL");
+                repoUrl = ParseUrl.Parse(repoUrlTemplate, userName);
+                var activityUrlTemplate = Environment.GetEnvironmentVariable("USER_EVENTS_URL");
+                activityUrl = ParseUrl.Parse(activityUrlTemplate, userName);
+                return;        
             }
         }
-        exit_loop: ;
     }
 }

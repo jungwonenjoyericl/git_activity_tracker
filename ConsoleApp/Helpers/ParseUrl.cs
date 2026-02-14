@@ -1,15 +1,21 @@
-namespace Dialogue.PARSE;
+using System;
+using System.Collections.Generic;
+
 
 // parse url
-public static class ParseURL
-{
+namespace ConsoleApp.Helpers;
+
+public static class ParseUrl
+
+    {
     // return parsed url
     public static string Parse(string url, string name)
     {
-        List<string> urlElements = new url.Split("/");
-        urlElements.Insert(urlElements.Count - 2, name);        
+        string[] urlElements = url.Split("/");
+        urlElements[^2] = name;
         string parsedUrl = string.Join("/", urlElements);
         return parsedUrl;
     }
 }
+
 

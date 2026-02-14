@@ -29,40 +29,10 @@ if (!string.IsNullOrWhiteSpace(token))
         new AuthenticationHeaderValue("Bearer", token);
 }
 
-// test: input -> get input repos
-// string userName = null;
-// string choice = null;
-
-// while (true) {
-//     Console.WriteLine("What do you wan't to do?");
-//     Console.WriteLine("1: Track your own repositories");
-//     Console.WriteLine("2: Track your recent activities(public)");
-//     Console.WriteLine("3: Track [username]s  public repositories + activities");
-//     choice = Console.ReadLine();
-
-//     switch(choice)
-//     {
-//         case "1":
-//         url = Environment.GetEnvironmentVariable("PRIVATE_URL");
-//         goto exit_to_repo_getter;
-
-//         case "2":
-//         userName = "Your";
-//         url = Environment.GetEnvironmentVariable("PRIVATE_URL");
-//         goto exit_to_repo_getter;
-
-//         case "3":
-//         Console.WriteLine("Username: ");
-//         userName = Console.ReadLine();
-//         url = Environment.GetEnvironmentVariable("USER_URL");
-//         Console.WriteLine(url[1]);
-//         goto exit_to_repo_getter;
-//     }
-// }
 var dialogue = new Dialogue();
 dialogue.Start();
 
-exit_to_repo_getter: ;
+Console.WriteLine(dialogue.repoUrl);
 var resp = await client.GetAsync(dialogue.repoUrl);
 int statusCode = (int)resp.StatusCode;
 
