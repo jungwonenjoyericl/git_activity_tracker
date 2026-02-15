@@ -5,10 +5,9 @@ using System.Collections.Generic;
 // parse url
 namespace ConsoleApp.Helpers;
 
-public static class ParseUrl
-
-    {
-    // return parsed url
+internal static class ParseUrl
+{
+    // url + name -> return user url
     public static string Parse(string url, string name)
     {
         string[] urlElements = url.Split("/");

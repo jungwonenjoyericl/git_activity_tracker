@@ -8,8 +8,11 @@ using System.Diagnostics.Tracing;
 
 // import modules
 using ConsoleApp.UI;
+using ConsoleApp.Output;
 
 Env.Load("../.env");
+
+// top level class: default on <internal>
 
 Console.Clear();
 Console.WriteLine("\x1b[3J");
@@ -44,6 +47,8 @@ if (statusCode != 200)
 Console.WriteLine("---------------");
 Console.WriteLine($"Status: {(int)resp.StatusCode} {resp.ReasonPhrase}");
 Console.WriteLine("---------------");
+
+// TODO: move requests to another module
 string body = await resp.Content.ReadAsStringAsync();
 using var doc = JsonDocument.Parse(body);
 
@@ -58,6 +63,7 @@ foreach (var repo in doc.RootElement.EnumerateArray())
     Console.WriteLine($"* {name}");
 }
 
+// current progress here:
 exit_to_activity_getter: ;
 Console.WriteLine($"{dialogue.userName}s Recent Activities: ");
 Console.WriteLine("---------------");
@@ -75,6 +81,7 @@ if (dialogue.activityUrl != null)
         url = Environment.GetEnvironmentVariable("MY_EVENTS_URL");
     }
 
+    // TODO: move request to module
     var resp2 = await client.GetAsync(dialogue.activityUrl);
     string body2 = await resp2.Content.ReadAsStringAsync();
     using var doc2 = JsonDocument.Parse(body2);

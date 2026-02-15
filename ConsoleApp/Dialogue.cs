@@ -2,7 +2,7 @@ namespace ConsoleApp.UI;
 
 using ConsoleApp.Helpers;
 
-public class Dialogue
+internal class Dialogue
 {        
     public string repoUrl;
     public string activityUrl;
