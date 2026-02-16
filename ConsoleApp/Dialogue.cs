@@ -6,10 +6,10 @@ internal class Dialogue
 {        
     public string repoUrl;
     public string activityUrl;
-    public string userName;
-    public string choice;
+    public string userName { get; set; }
+    public string choice {get; set;}
 
-    public void Start()
+    public void Interaction()
     {
         while (true) 
         {
@@ -43,7 +43,7 @@ internal class Dialogue
                 repoUrl = ParseUrl.Parse(repoUrlTemplate, userName);
                 var activityUrlTemplate = Environment.GetEnvironmentVariable("USER_EVENTS_URL");
                 activityUrl = ParseUrl.Parse(activityUrlTemplate, userName);
-                return;        
+                return;
             }
         }
     }

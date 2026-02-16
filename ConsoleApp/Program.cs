@@ -9,8 +9,10 @@ using System.Diagnostics.Tracing;
 // import modules
 using ConsoleApp.UI;
 using ConsoleApp.Output;
+using ConsoleApp.Services;
 
 Env.Load("../.env");
+string token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
 
 // top level class: default on <internal>
 
@@ -18,25 +20,15 @@ Console.Clear();
 Console.WriteLine("\x1b[3J");
 
 // setup api client
-string url = null;
-string token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
-
 using var client = new HttpClient();
-client.DefaultRequestHeaders.UserAgent.ParseAdd("git-activity-tracker/1.0");
-client.DefaultRequestHeaders.Accept.Add(
-    new MediaTypeWithQualityHeaderValue("application/vnd.github+json"));
-
-if (!string.IsNullOrWhiteSpace(token))
-{
-    client.DefaultRequestHeaders.Authorization =
-        new AuthenticationHeaderValue("Bearer", token);
-}
+var service = new GithubService(client);
+service.InitializeClient();
 
 var dialogue = new Dialogue();
-dialogue.Start();
 
-Console.WriteLine(dialogue.repoUrl);
-var resp = await client.GetAsync(dialogue.repoUrl);
+// TODO: module with infogetter using the created client
+string repoUrl = dialogue.repoUrl;
+var resp = await client.GetAsync(repoUrl);
 int statusCode = (int)resp.StatusCode;
 
 if (statusCode != 200) 
@@ -48,53 +40,35 @@ Console.WriteLine("---------------");
 Console.WriteLine($"Status: {(int)resp.StatusCode} {resp.ReasonPhrase}");
 Console.WriteLine("---------------");
 
+
+
 // TODO: move requests to another module
 string body = await resp.Content.ReadAsStringAsync();
 using var doc = JsonDocument.Parse(body);
 
-if (dialogue.choice == "2") { goto exit_to_activity_getter; }
+// output class call ---- dummy arguments
+// Tests
+private readonly string action = dialogue.choice;
+private readonly string userName = dialogue.userName;
 
-Console.WriteLine($"{dialogue.userName}s Repositories: ");
-Console.WriteLine("---------------");
-
-foreach (var repo in doc.RootElement.EnumerateArray())
+switch (action)
 {
-    string name = repo.GetProperty("name").GetString();
-    Console.WriteLine($"* {name}");
+    case "1":
+    // Repos.cs
+    case "2":
+    // Events.cs
+    case "3":
+    // Repos.cs
+    // Events.cs
 }
 
-// current progress here:
-exit_to_activity_getter: ;
+
+var output = new Output(dialogue.userName, action, doc);
+
+if (dialogue.choice == "2") { goto exit_to_activity_getter; }
+
+
 Console.WriteLine($"{dialogue.userName}s Recent Activities: ");
 Console.WriteLine("---------------");
 
 
-// TODO: if parseUrl returns, do this    arguments: (dialogue.activityUrl, dialogue.userName)
-if (dialogue.activityUrl != null)
-{
-    if (dialogue.choice == "3")
-    {
-        url = $"https://api.github.com/users/{dialogue.userName}/events";
-    } 
-    else
-    {
-        url = Environment.GetEnvironmentVariable("MY_EVENTS_URL");
-    }
-
-    // TODO: move request to module
-    var resp2 = await client.GetAsync(dialogue.activityUrl);
-    string body2 = await resp2.Content.ReadAsStringAsync();
-    using var doc2 = JsonDocument.Parse(body2);
-    JsonElement root = doc2.RootElement;
-
-    for (int i = 0; i < root.GetArrayLength(); i++ ) 
-    {
-        JsonElement ev = root[i];
-
-        string eventType = ev.GetProperty("type").GetString();
-        string repo = ev.GetProperty("repo").GetProperty("name").GetString();
-        string time = ev.GetProperty("created_at").GetString();
-
-        Console.WriteLine($"{time} | {eventType} | {repo}");
-    }
-}
