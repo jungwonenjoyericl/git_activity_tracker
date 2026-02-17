@@ -13,7 +13,9 @@ using ConsoleApp.Services;
 using ConsoleApp.Models;
 
 Env.Load("../.env");
+
 string token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+string testUrl = Environment.GetEnvironmentVariable("PRIVATE_URL");
 
 // top level class: default on <internal>
 
@@ -21,60 +23,50 @@ Console.Clear();
 Console.WriteLine("\x1b[3J");
 
 // setup api client
-using var client = new HttpClient();
-var service = new GithubService(client);
-service.InitializeClient();
+using var client = new HttpClient(); // create client , remove after last line of code
+var gitHubService = new GitHubService(client, token); // modify client
+gitHubService.InitializeClient();
+
+// use client -- make requests
+// var repos = new Repos(); // get repos
+// Task<string> repoJson = repos.GetJsonDoc(service.Client);
+
 
 var dialogue = new Dialogue();
+dialogue.Interaction();
 
-// TODO: module with infogetter using the created client
-string repoUrl = dialogue.repoUrl;
-var resp = await client.GetAsync(repoUrl);
-int statusCode = (int)resp.StatusCode;
-
-if (statusCode != 200) 
-{
-    throw new ArgumentException ($"Could not connect to Github API: statuscode: {statusCode}", nameof(statusCode));
-};
-
-Console.WriteLine("---------------");
-Console.WriteLine($"Status: {(int)resp.StatusCode} {resp.ReasonPhrase}");
-Console.WriteLine("---------------");
 
 
 
 // TODO: move requests to another module
-string body = await resp.Content.ReadAsStringAsync();
-using var doc = JsonDocument.Parse(body);
+// string body = await resp.Content.ReadAsStringAsync();
+// using var doc = JsonDocument.Parse(body);
 
 // output class call ---- dummy arguments
 // Tests
-private readonly string action = dialogue.choice;
-private readonly string userName = dialogue.userName;
-var output = new Output();
+var action = dialogue.choice;
+var userName = dialogue.userName;
+// output object
 switch (action)
 {
     case "1":
     // get repo document --> output module
-    var repos = new Repos();
-    output.PrintOut(Name: userName, Choice: action, repoDoc: repos);
+    var repos = new Repos(gitHubService); // get repos
+    JsonDocument repoJson = await repos.GetJsonDoc(testUrl);  // for "1" as choice
+    var output = new Output(name: userName, choice: action, repoDoc: repoJson);
+    output.PrintOut();
     break;
 
     case "2":
     // Events.cs
 
     case "3":
+    break;
     // Repos.cs
     // Events.cs
 }
 
 
 // var output = new Output(dialogue.userName, action, doc);
-
-if (dialogue.choice == "2") { goto exit_to_activity_getter; }
-
-
-Console.WriteLine($"{dialogue.userName}s Recent Activities: ");
-Console.WriteLine("---------------");
 
 
