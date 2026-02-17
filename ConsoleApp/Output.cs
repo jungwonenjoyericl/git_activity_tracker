@@ -9,38 +9,44 @@ internal static class Output
     private string activityUrl;
 
     private string Name = "Your";
-    private int Choice;
-    private JsonElement root;
+    //private int Choice;
+    private JsonElement repoRoot;
 
     // constructor
-    public Output(string name, string choice, JsonDocument document)
-    {
-        if (name != null) { Name = $"{name}s"; };
-        Choice = choice;
-        root = document.RootElement;
-    }
+    // public Output(string name, string choice, JsonDocument document)
+    // {
+    //     if (name != null) { Name = $"{name}s"; };
+    //     Choice = choice;
+    //     root = document.RootElement;
+    // }
 
-    public void PrintOut()
+    public void PrintOut(string? Name, string Choice, JsonDocument repoDoc = null, JsonDocument eventsDoc = null)
     {
+        if (name != null) { this.Name = $"{Name}s"; };
+
         // logic that calls what to print depending on object instances
         switch(Choice)
         {
             case "1":
-            PrintRepos();
+            repoDoc = repoDoc.RootElement;
+            PrintRepos(repoDoc);
             return;
 
             case "2":
-            PrintActivities();
+            eventsDoc.RootElement;
+            PrintActivities(eventsDoc);
             return;
 
             case "3":
-            PrintRepos();
-            PrintActivities();
+            repoDoc.RootElement;
+            eventsDoc.RootElement;
+            PrintRepos(repoDoc);
+            PrintActivities(eventsDoc);
             return;        
         }
     }
 
-    public void PrintRepos()// do this if repo requested
+    public void PrintRepos(JsonDocument doc)// do this if repo requested
     {
         Console.WriteLine($"{Name} Repositories: ");   
         Console.WriteLine("---------------");
@@ -53,27 +59,27 @@ internal static class Output
 
     }
 
-    public void PrintActivities()
+    public void PrintActivities(JsonDocument doc)
     {
         Console.WriteLine($"{dialogue.userName}s Recent Activities: ");
         Console.WriteLine("---------------");
 
-        if (Choice != null)
-        {
-            if (choice == "3")
-            {
-                url = $"https://api.github.com/users/{dialogue.userName}/events"; 
-            } 
-            else
-            {
-                url = Environment.GetEnvironmentVariable("MY_EVENTS_URL"); 
-            }
+        // if (Choice != null)
+        // {
+            // if (choice == "3")
+            // {
+            //     url = $"https://api.github.com/users/{dialogue.userName}/events"; 
+            // } 
+            // else
+            // {
+            //     url = Environment.GetEnvironmentVariable("MY_EVENTS_URL"); 
+            // }
 
-            // TODO: move request to module
-            var resp2 = await client.GetAsync(dialogue.activityUrl);
-            string body2 = await resp2.Content.ReadAsStringAsync();
-            using var doc2 = JsonDocument.Parse(body2);
-            JsonElement root = doc2.RootElement;
+            // // TODO: move request to module
+            // var resp2 = await client.GetAsync(dialogue.activityUrl);
+            // string body2 = await resp2.Content.ReadAsStringAsync();
+            // using var doc2 = JsonDocument.Parse(body2);
+            // JsonElement root = doc2.RootElement;
 
             for (int i = 0; i < root.GetArrayLength(); i++ ) 
             {
@@ -85,6 +91,6 @@ internal static class Output
 
                 Console.WriteLine($"{time} | {eventType} | {repo}");
             }
-        }
+        // }
     }
 }

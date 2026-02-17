@@ -10,6 +10,7 @@ using System.Diagnostics.Tracing;
 using ConsoleApp.UI;
 using ConsoleApp.Output;
 using ConsoleApp.Services;
+using ConsoleApp.Models;
 
 Env.Load("../.env");
 string token = Environment.GetEnvironmentVariable("GITHUB_TOKEN");
@@ -50,20 +51,25 @@ using var doc = JsonDocument.Parse(body);
 // Tests
 private readonly string action = dialogue.choice;
 private readonly string userName = dialogue.userName;
-
+var output = new Output();
 switch (action)
 {
     case "1":
-    // Repos.cs
+    // get repo document --> output module
+    var repos = new Repos();
+    output.PrintOut(Name: userName, Choice: action, repoDoc: repos);
+    break;
+
     case "2":
     // Events.cs
+
     case "3":
     // Repos.cs
     // Events.cs
 }
 
 
-var output = new Output(dialogue.userName, action, doc);
+// var output = new Output(dialogue.userName, action, doc);
 
 if (dialogue.choice == "2") { goto exit_to_activity_getter; }
 
