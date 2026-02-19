@@ -5,7 +5,7 @@ using System.Collections.Generic;
 // parse url
 namespace ConsoleApp.Helpers;
 
-internal static class ParseUrl
+public static class ParseUrl
 {
     // url + name -> return user url
     public static string Parse(string url, string name)

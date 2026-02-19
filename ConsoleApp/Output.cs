@@ -4,48 +4,29 @@ namespace ConsoleApp.Output;
 
 internal class Output
 {
-    private readonly string Choice;
-    private readonly string Name = "Your";
-    //private int Choice;
+    private readonly string name = "Your";
     private readonly JsonElement repoRoot;
     private readonly JsonElement eventsRoot;
 
-    // constructor
-    public Output(string? name, string choice, JsonDocument repoDoc = null, JsonDocument eventsDoc = null)
+    // Initializes the output renderer with optional repository and event payloads.
+    public Output(string? name, JsonDocument repoDoc, JsonDocument eventsDoc = null)
     {
-        repoDoc ??= JsonDocument.Parse("{}"); 
-        eventsDoc ??= JsonDocument.Parse("{}"); 
-
-        if (name != null) { Name = $"{name}s"; };  
-        Choice = choice;
-        repoRoot = repoDoc.RootElement;
-        eventsRoot = eventsDoc.RootElement;
+        if (name != null) { this.name = $"{name}s"; }
+        repoRoot = repoDoc?.RootElement ?? default;
+        eventsRoot = eventsDoc?.RootElement ?? default;
     }
 
+    // Prints only sections that have data.
     public void PrintOut()
     {
-
-        // logic that calls what to print depending on object instances
-        switch(Choice)
-        {
-            case "1":
-            PrintRepos();
-            return;
-
-            case "2":
-            PrintActivities();
-            return;
-
-            case "3":
-            PrintRepos();
-            PrintActivities();
-            return;        
-        }
+        if (repoRoot.ValueKind != JsonValueKind.Undefined) { PrintRepos(); }
+        if (eventsRoot.ValueKind != JsonValueKind.Undefined) { PrintActivities(); }
     }
 
-    public void PrintRepos()// do this if repo requested
+    public void PrintRepos()
     {
-        Console.WriteLine($"{Name} Repositories: ");   
+        Console.WriteLine("---------------");
+        Console.WriteLine($"{name} Repositories: ");
         Console.WriteLine("---------------");
 
         foreach (var repo in repoRoot.EnumerateArray())
@@ -53,32 +34,15 @@ internal class Output
             string repoName = repo.GetProperty("name").GetString();
             Console.WriteLine($"* {repoName}");
         }
-
     }
 
     public void PrintActivities()
     {
-        Console.WriteLine($"{Name} Recent Activities: ");
+        Console.WriteLine("---------------");
+        Console.WriteLine($"{name} Recent Activities: ");
         Console.WriteLine("---------------");
 
-        // if (Choice != null)
-        // {
-            // if (choice == "3")
-            // {
-            //     url = $"https://api.github.com/users/{dialogue.userName}/events"; 
-            // } 
-            // else
-            // {
-            //     url = Environment.GetEnvironmentVariable("MY_EVENTS_URL"); 
-            // }
-
-            // // TODO: move request to module
-            // var resp2 = await client.GetAsync(dialogue.activityUrl);
-            // string body2 = await resp2.Content.ReadAsStringAsync();
-            // using var doc2 = JsonDocument.Parse(body2);
-            // JsonElement root = doc2.RootElement;
-
-        for (int i = 0; i < eventsRoot.GetArrayLength(); i++ ) 
+        for (int i = 0; i < eventsRoot.GetArrayLength(); i++)
         {
             JsonElement ev = eventsRoot[i];
 
@@ -88,6 +52,5 @@ internal class Output
 
             Console.WriteLine($"{time} | {eventType} | {repo}");
         }
-        // }
     }
 }

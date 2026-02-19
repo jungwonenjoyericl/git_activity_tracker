@@ -21,3 +21,13 @@
 # Env files
 .env
 
+# Test and coverage output
+TestResults/
+**/TestResults/
+*.trx
+coverage/
+coverage.*
+*.coverage
+*.coveragexml
+
+

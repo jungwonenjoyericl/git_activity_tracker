@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-internal interface IGitHubAccessor
+public interface IGitHubAccessor
 {
     Task<JsonDocument> GetJsonDoc(string url);
 }
